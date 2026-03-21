@@ -45,8 +45,19 @@ data/processed/
 *.csv
 *.parquet
 !configs/*.csv
+docs/research/
 
 # Models
 *.pt
 *.pth
 *.pkl
+
+# AI
+.agent/
+.agents/
+.claude/
+.codex/
+.gemini/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
