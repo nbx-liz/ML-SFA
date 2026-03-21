@@ -4,7 +4,8 @@
 def test_package_import() -> None:
     import ml_sfa
 
-    assert ml_sfa.__version__ == "0.1.0"
+    assert isinstance(ml_sfa.__version__, str)
+    assert len(ml_sfa.__version__) > 0
 
 
 def test_submodule_imports() -> None:

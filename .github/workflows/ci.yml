@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync --frozen --dev
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src/ml_sfa/
+      - name: Run tests
+        run: |
+          if [ "${{ github.base_ref }}" = "main" ] || [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            uv run pytest -m "" --cov=ml_sfa --cov-fail-under=80 -q
+          else
+            uv run pytest --cov=ml_sfa --cov-fail-under=80 -q
+          fi
+
+  distribution:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - run: uv python install 3.11
+      - run: uv sync --frozen --dev
+      - run: uv build
+      - run: uv run twine check dist/*
+      - name: Smoke test
+        run: |
+          pip install dist/*.whl
+          python -c "from ml_sfa import __version__; print('import ok:', __version__)"
