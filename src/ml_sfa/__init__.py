@@ -1,3 +1,5 @@
 """ML-SFA: Machine Learning approaches to Stochastic Frontier Analysis."""
 
-__version__ = "0.1.0"
+from ml_sfa._version import __version__, __version_tuple__
+
+__all__ = ["__version__", "__version_tuple__"]

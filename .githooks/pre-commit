@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Pre-commit hook: runs ruff check + format on staged .py files
+# Activate: git config core.hooksPath .githooks
+
+set -e
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' || true)
+
+if [ -z "$STAGED" ]; then
+    exit 0
+fi
+
+echo "Running ruff check on staged files..."
+uv run ruff check $STAGED
+echo "Running ruff format check on staged files..."
+uv run ruff format --check $STAGED
+
+echo "Pre-commit checks passed."

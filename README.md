@@ -2,16 +2,25 @@
 
 Machine Learning approaches to Stochastic Frontier Analysis.
 
-## Setup
+## Installation
 
 ```bash
-uv venv .venv
-source .venv/bin/activate
-uv pip install -e ".[dev]"
+pip install ml-sfa
+
+# With neural network support
+pip install ml-sfa[nn]
+
+# With BART-SFM support
+pip install ml-sfa[bart]
 ```
 
-## Tests
+## Development
 
 ```bash
-pytest
+uv sync --frozen --dev
+make ci
 ```
+
+## License
+
+MIT
