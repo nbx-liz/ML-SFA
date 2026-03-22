@@ -15,7 +15,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted, validate_data
 
-from ml_sfa.models._types import FloatArray, FrontierType, InefficiencyType
+from ml_sfa._types import FloatArray, FrontierType, InefficiencyType
 
 __all__ = ["BaseSFAEstimator", "SFASummary"]
 

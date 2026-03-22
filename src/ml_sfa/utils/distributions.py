@@ -17,7 +17,7 @@ import numpy as np
 from scipy.special import log_ndtr
 from scipy.stats import norm
 
-from ml_sfa.models._types import FloatArray
+from ml_sfa._types import FloatArray
 
 __all__ = [
     "Exponential",

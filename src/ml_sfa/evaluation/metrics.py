@@ -9,7 +9,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.stats import spearmanr
 
-from ml_sfa.models._types import FloatArray
+from ml_sfa._types import FloatArray
 
 __all__ = [
     "aic",

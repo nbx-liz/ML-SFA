@@ -13,7 +13,7 @@ from typing import get_args
 import numpy as np
 from scipy.stats import truncnorm
 
-from ml_sfa.models._types import FloatArray, FrontierType, InefficiencyType
+from ml_sfa._types import FloatArray, FrontierType, InefficiencyType
 
 __all__ = ["SFADataset", "simulate_sfa"]
 

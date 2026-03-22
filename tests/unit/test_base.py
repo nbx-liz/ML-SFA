@@ -9,7 +9,7 @@ import pytest
 from numpy.typing import NDArray
 from sklearn.exceptions import NotFittedError
 
-from ml_sfa.models._types import FloatArray
+from ml_sfa._types import FloatArray
 from ml_sfa.models.base import BaseSFAEstimator, SFASummary
 
 
