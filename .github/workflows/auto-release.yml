@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,3 +55,14 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             --title "${{ steps.version.outputs.tag }}" \
             --notes "${{ steps.notes.outputs.notes }}"
+
+  # GITHUB_TOKEN push does not trigger other workflows,
+  # so we call release.yml directly via workflow_call.
+  publish:
+    needs: tag-and-release
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.tag-and-release.outputs.tag }}
+    permissions:
+      contents: read
+      id-token: write
