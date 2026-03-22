@@ -85,16 +85,19 @@ def compare_models(
     list[ComparisonResult]
         One result per model, in insertion order.
     """
+    from sklearn.base import clone
+
     true_frontier = _compute_true_frontier(dataset)
     results: list[ComparisonResult] = []
 
     for name, model in models.items():
+        fitted = clone(model)
         t0 = time.perf_counter()
-        model.fit(dataset.X, dataset.y)
+        fitted.fit(dataset.X, dataset.y)
         elapsed = time.perf_counter() - t0
 
-        te_hat = model.efficiency(dataset.X, dataset.y)
-        pred = model.predict(dataset.X)
+        te_hat = fitted.efficiency(dataset.X, dataset.y)
+        pred = fitted.predict(dataset.X)
 
         rmse_te = float(np.sqrt(np.mean((dataset.te - te_hat) ** 2)))
         rank_corr = float(spearmanr(dataset.te, te_hat).statistic)
@@ -107,9 +110,9 @@ def compare_models(
                 rank_corr=rank_corr,
                 frontier_mse=f_mse,
                 mean_efficiency=float(np.mean(te_hat)),
-                sigma_v=model.sigma_v_,
-                sigma_u=model.sigma_u_,
-                log_likelihood=model.log_likelihood(),
+                sigma_v=fitted.sigma_v_,
+                sigma_u=fitted.sigma_u_,
+                log_likelihood=fitted.log_likelihood(),
                 elapsed_seconds=elapsed,
             )
         )
@@ -170,6 +173,15 @@ def run_benchmark(
     """
     from ml_sfa.data.simulator import simulate_sfa
 
+    # Validate factory entries
+    for name, factory in model_factories.items():
+        if "class" not in factory:
+            msg = (
+                f"model_factories entry {name!r} is missing required "
+                f"key 'class'. Got keys: {list(factory.keys())}"
+            )
+            raise ValueError(msg)
+
     all_frames: list[pd.DataFrame] = []
 
     for dgp_kwargs in dgp_configs:
@@ -189,5 +201,8 @@ def run_benchmark(
             df[f"dgp_{key}"] = val
 
         all_frames.append(df)
+
+    if not all_frames:
+        return pd.DataFrame()
 
     return pd.concat(all_frames, ignore_index=True)

@@ -134,9 +134,8 @@ class KernelSFA(BaseSFAEstimator):
         Z = np.hstack([ones, X - x_i])
         k = Z.shape[1]
 
-        # Weighted OLS initialisation
-        W = np.diag(weights)
-        ZtW = Z.T @ W
+        # Weighted OLS initialisation (element-wise for O(nk) memory)
+        ZtW = (Z * weights[:, None]).T
         try:
             beta_init = np.linalg.solve(ZtW @ Z + 1e-6 * np.eye(k), ZtW @ y)
         except np.linalg.LinAlgError:
@@ -276,7 +275,10 @@ class KernelSFA(BaseSFAEstimator):
         """Return a summary of the fitted kernel SFA model."""
         self._check_fitted()
         p = self.n_features_in_
-        n_params = p + 1 + 2  # local betas + sigma_v + sigma_u
+        # Effective DoF: n local fits × (p+3) params each.
+        # AIC/BIC are not directly comparable to parametric models.
+        n_params_per_obs = p + 1 + 2
+        n_params = self._n_obs * n_params_per_obs
         n_obs = self._n_obs
         ll = self.log_likelihood_
         aic_val = -2.0 * ll + 2.0 * n_params

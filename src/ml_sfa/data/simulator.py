@@ -200,12 +200,17 @@ def _compute_frontier(
     Args:
         ln_x: Log-transformed inputs of shape ``(n_obs, n_inputs)``.
         beta: Coefficient vector.
-        frontier_type: ``"cobb-douglas"`` or ``"translog"``.
+        frontier_type: ``"cobb-douglas"`` or ``"translog"``
+            (``"nonlinear"`` is handled separately before this function).
         n_inputs: Number of input variables.
 
     Returns:
         Frontier values of shape ``(n_obs,)``.
     """
+    if frontier_type not in ("cobb-douglas", "translog"):
+        msg = f"_compute_frontier: unsupported frontier_type {frontier_type!r}"
+        raise ValueError(msg)
+
     if frontier_type == "cobb-douglas":
         cd_frontier: FloatArray = beta[0] + ln_x @ beta[1:]
         return cd_frontier
