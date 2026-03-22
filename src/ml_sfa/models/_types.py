@@ -1,17 +1,5 @@
-"""Shared type definitions for SFA models."""
+"""Re-export type definitions from ml_sfa._types for backward compatibility."""
 
-from typing import Any, Literal
-
-import numpy as np
-from numpy.typing import NDArray
-
-# Array type for float64 arrays used throughout the library
-FloatArray = NDArray[np.floating[Any]]
-
-# Frontier function types
-FrontierType = Literal["cobb-douglas", "translog"]
-
-# Inefficiency distribution types
-InefficiencyType = Literal["half-normal", "truncated-normal", "exponential"]
+from ml_sfa._types import FloatArray, FrontierType, InefficiencyType
 
 __all__ = ["FloatArray", "FrontierType", "InefficiencyType"]

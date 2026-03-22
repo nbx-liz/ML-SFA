@@ -17,7 +17,7 @@ from scipy.optimize import minimize
 from scipy.special import log_ndtr
 from scipy.stats import skew
 
-from ml_sfa.models._types import FloatArray, FrontierType, InefficiencyType
+from ml_sfa._types import FloatArray, FrontierType, InefficiencyType
 from ml_sfa.models.base import BaseSFAEstimator, SFASummary
 from ml_sfa.utils.distributions import (
     Exponential,
