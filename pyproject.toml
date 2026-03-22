@@ -80,7 +80,7 @@ warn_unused_configs = true
 mypy_path = "src"
 
 [[tool.mypy.overrides]]
-module = ["torch.*", "pymc.*", "pymc_bart.*", "statsmodels.*", "sklearn.*"]
+module = ["torch.*", "pymc.*", "pymc_bart.*", "statsmodels.*", "sklearn.*", "scipy.*"]
 ignore_missing_imports = true
 
 [tool.coverage.run]

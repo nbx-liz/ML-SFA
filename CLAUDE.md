@@ -74,3 +74,22 @@ make clean          # remove artifacts
 - Tests follow TDD: write test first, then implement
 - Target 80%+ test coverage (CI enforced)
 - Optional heavy dependencies: `torch` in `[nn]`, `pymc`/`pymc-bart` in `[bart]`
+
+## Skills（実装手順は SKILL に集約）
+
+該当作業は SKILL に従う:
+
+- 仕様変更の提案・記録: `skills/history-proposals/SKILL.md`（共有）
+- 開発環境・品質ゲート: `skills/dev-environment/SKILL.md`（共有）
+- テスト: `skills/testing/SKILL.md`（SFA モデル検証固有）
+- リリース: `skills/release/SKILL.md`（PyPI 公開手順）
+
+## 共通ルール（グローバル rules 参照）
+
+`~/.claude/rules/project/` の共通ルールに従う:
+
+- **ドキュメント参照**: `doc-reference.md`
+- **セキュリティ**: `security-mcp.md`
+- **コンテキスト効率**: `context-efficiency.md`
+- **変更ゲート**: `change-gate.md` — 公開 API 変更時は Proposal 先行
+- **ドキュメント優先順位**: `doc-hierarchy.md`
