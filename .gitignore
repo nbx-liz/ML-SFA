@@ -55,6 +55,7 @@ data/processed/
 *.pkl
 
 # AI
+.ai_settings/
 .agent/
 .agents/
 .claude/
