@@ -9,7 +9,7 @@ from numpy.typing import NDArray
 FloatArray = NDArray[np.floating[Any]]
 
 # Frontier function types
-FrontierType = Literal["cobb-douglas", "translog"]
+FrontierType = Literal["cobb-douglas", "translog", "nonlinear"]
 
 # Inefficiency distribution types
 InefficiencyType = Literal["half-normal", "truncated-normal", "exponential"]

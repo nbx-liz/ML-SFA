@@ -137,6 +137,58 @@ def _build_translog_beta(
     return np.concatenate([intercept, linear, squared, cross])
 
 
+def _build_nonlinear_beta(
+    rng: np.random.Generator,
+    n_inputs: int,
+) -> FloatArray:
+    """Generate coefficients for the nonlinear frontier DGP.
+
+    The nonlinear frontier uses a mix of log, power, and interaction terms
+    that cannot be captured by Cobb-Douglas or Translog specifications.
+
+    Args:
+        rng: NumPy random generator instance.
+        n_inputs: Number of input variables.
+
+    Returns:
+        Coefficient array of length ``n_inputs + 1``.
+    """
+    intercept = np.array([1.5])
+    slopes = rng.uniform(0.3, 0.7, n_inputs)
+    return np.concatenate([intercept, slopes])
+
+
+def _compute_nonlinear_frontier(
+    x: FloatArray,
+    beta: FloatArray,
+    n_inputs: int,
+) -> FloatArray:
+    """Compute a nonlinear frontier that parametric models cannot capture.
+
+    ``f(x) = beta_0 + sum_j beta_j * x_j^0.6 + 0.3 * sin(ln(x_1) * ln(x_2))``
+
+    The sine interaction term introduces non-monotone local behaviour that
+    Cobb-Douglas and Translog cannot represent.
+
+    Args:
+        x: Raw inputs of shape ``(n_obs, n_inputs)``.
+        beta: Coefficient vector.
+        n_inputs: Number of input variables.
+
+    Returns:
+        Frontier values of shape ``(n_obs,)``.
+    """
+    frontier: FloatArray = np.full(x.shape[0], beta[0])
+    for j in range(n_inputs):
+        frontier = frontier + beta[j + 1] * np.power(x[:, j], 0.6)
+
+    # Add non-parametric interaction if at least 2 inputs
+    if n_inputs >= 2:
+        frontier = frontier + 0.3 * np.sin(np.log(x[:, 0]) * np.log(x[:, 1]))
+
+    return frontier
+
+
 def _compute_frontier(
     ln_x: FloatArray,
     beta: FloatArray,
@@ -148,12 +200,17 @@ def _compute_frontier(
     Args:
         ln_x: Log-transformed inputs of shape ``(n_obs, n_inputs)``.
         beta: Coefficient vector.
-        frontier_type: ``"cobb-douglas"`` or ``"translog"``.
+        frontier_type: ``"cobb-douglas"`` or ``"translog"``
+            (``"nonlinear"`` is handled separately before this function).
         n_inputs: Number of input variables.
 
     Returns:
         Frontier values of shape ``(n_obs,)``.
     """
+    if frontier_type not in ("cobb-douglas", "translog"):
+        msg = f"_compute_frontier: unsupported frontier_type {frontier_type!r}"
+        raise ValueError(msg)
+
     if frontier_type == "cobb-douglas":
         cd_frontier: FloatArray = beta[0] + ln_x @ beta[1:]
         return cd_frontier
@@ -237,11 +294,16 @@ def simulate_sfa(
     # --- Generate coefficients ---
     if frontier_type == "cobb-douglas":
         beta = _build_cobb_douglas_beta(rng, n_inputs)
+    elif frontier_type == "nonlinear":
+        beta = _build_nonlinear_beta(rng, n_inputs)
     else:
         beta = _build_translog_beta(rng, n_inputs)
 
     # --- Compute deterministic frontier ---
-    frontier = _compute_frontier(ln_x, beta, frontier_type, n_inputs)
+    if frontier_type == "nonlinear":
+        frontier = _compute_nonlinear_frontier(x, beta, n_inputs)
+    else:
+        frontier = _compute_frontier(ln_x, beta, frontier_type, n_inputs)
 
     # --- Generate error components ---
     v = rng.normal(0.0, sigma_v, n_obs)
