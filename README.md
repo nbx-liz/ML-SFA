@@ -18,6 +18,7 @@ pip install ml-sfa[bart]
 
 ```bash
 uv sync --frozen --dev
+git config core.hooksPath .githooks
 make ci
 ```
 
