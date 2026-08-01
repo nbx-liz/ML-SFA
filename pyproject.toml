@@ -67,7 +67,12 @@ pythonpath = ["src"]
 target-version = "py311"
 src = ["src", "tests"]
 line-length = 88
-exclude = ["src/ml_sfa/_version.py"]
+exclude = [
+    "src/ml_sfa/_version.py",
+    ".githooks/artifact-language.py",
+    "scripts/verify-artifact-language-bundle.py",
+    "tests/artifact-language-probe.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B", "SIM"]

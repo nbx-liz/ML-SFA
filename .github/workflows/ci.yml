@@ -7,6 +7,16 @@ on:
     branches: [main]
 
 jobs:
+  git-policy:
+    name: Owned Git policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Activate tracked hooks
+        run: git config core.hooksPath .githooks
+      - name: Verify owned hook routing and controls
+        run: bash tests/test-owned-githooks-policy.sh
+
   quality:
     runs-on: ubuntu-latest
     strategy:
@@ -22,6 +32,7 @@ jobs:
       - run: uv python install ${{ matrix.python-version }}
       - run: uv sync --frozen --dev
       - run: uv run ruff check .
+      - run: bash tests/test-ruff-policy-boundary.sh
       - run: uv run ruff format --check .
       - run: uv run mypy src/ml_sfa/
       - name: Run tests
