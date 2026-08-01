@@ -69,7 +69,7 @@ src = ["src", "tests"]
 line-length = 88
 exclude = [
     "src/ml_sfa/_version.py",
-    ".githooks/",
+    ".githooks/artifact-language.py",
     "scripts/verify-artifact-language-bundle.py",
     "tests/artifact-language-probe.py",
 ]
