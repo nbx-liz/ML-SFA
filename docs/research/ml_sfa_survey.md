@@ -1,6 +1,7 @@
 # ML-SFA 調査レポート: 機械学習による確率的フロンティア分析の現状
 
 **作成日:** 2026-03-22
+**関連:** 決定論・ノンパラ系手法 (DEA, FDH, StoNED, EAT 等) は [`deterministic_frontier_survey.md`](./deterministic_frontier_survey.md) を参照。
 
 ---
 
